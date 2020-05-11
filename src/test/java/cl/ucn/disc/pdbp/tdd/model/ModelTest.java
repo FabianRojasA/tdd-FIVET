@@ -57,8 +57,20 @@ public final class ModelTest {
         log.debug(".. rut ..");
         Assertions.assertThrows(RuntimeException.class, () -> new Persona(nombre, apellido, rutError));
 
-        // TODO: Add the size of nombre y apellido.
+        // Testing parameter's size
+        Assertions.assertThrows(RuntimeException.class, ()-> new Persona("",apellido,rutOk));
+        Assertions.assertThrows(RuntimeException.class, ()-> new Persona("a",apellido,rutOk));
+        Assertions.assertThrows(RuntimeException.class, ()-> new Persona(nombre,"",rutOk));
+        Assertions.assertThrows(RuntimeException.class, ()-> new Persona(nombre,"a",rutOk));
+        Assertions.assertThrows(RuntimeException.class, ()-> new Persona(nombre,"aa",rutOk));
 
+        Assertions.assertThrows(RuntimeException.class, ()-> new Persona("","",rutOk));
+        Assertions.assertThrows(RuntimeException.class, ()-> new Persona("","a",rutOk));
+        Assertions.assertThrows(RuntimeException.class, ()-> new Persona("","aa",rutOk));
+
+        Assertions.assertThrows(RuntimeException.class, ()-> new Persona("a","",rutOk));
+        Assertions.assertThrows(RuntimeException.class, ()-> new Persona("a","a",rutOk));
+        Assertions.assertThrows(RuntimeException.class, ()-> new Persona("a","aa",rutOk));
         log.debug("Done.");
 
     }
@@ -67,7 +79,6 @@ public final class ModelTest {
      * Test the digito verificador.
      */
     @Test
-    @Disabled // remove to run
     public void testDigitoVerificador() {
 
         Assertions.assertFalse(Validation.isRutValid(null));
@@ -83,5 +94,6 @@ public final class ModelTest {
         Assertions.assertFalse(Validation.isRutValid("15253287-"));
 
     }
+
 
 }
