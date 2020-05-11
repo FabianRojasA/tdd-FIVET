@@ -115,4 +115,12 @@ public class Persona {
     public String getRut() {
         return rut;
     }
+
+    /**
+     * Retorna el id
+     * @return id
+     */
+    public long getId() {
+        return id;
+    }
 }
