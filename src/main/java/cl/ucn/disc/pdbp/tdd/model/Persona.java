@@ -24,24 +24,46 @@
  */
 
 package cl.ucn.disc.pdbp.tdd.model;
+
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
+
 /**
  *
  */
+@DatabaseTable(tableName = "persona")
 public class Persona {
+
+    /**
+     * The id: Primary key and autoincrement
+     */
+    @DatabaseField(generatedId = true)
+    private long id;
+
     /**
      * Nombre de la persona
      */
-    private final String nombre;
+    @DatabaseField(canBeNull = false)
+    private String nombre;
 
     /**
      * Apellido de la persona
      */
-    private final String apellido;
+    @DatabaseField(canBeNull = false)
+    private String apellido;
 
     /**
      * Rut de la persona
      */
-    private final String rut;
+    @DatabaseField(canBeNull = false, index = true)
+    private String rut;
+
+    /**
+     * Empty Constructor
+     */
+    Persona() {
+        //Nothing here
+    }
 
     /**
      * Constructor de una persona
