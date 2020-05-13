@@ -66,7 +66,7 @@ public final class StorageTest {
             Dao<Persona, Long> daoPersona = DaoManager.createDao(connectionSource,Persona.class);
 
             //New Persona
-            Persona persona = new Persona("Andrea","Contreras","152532873");
+            Persona persona = new Persona("Andrea","Contreras","152532873", "acontreras@ucn.cl");
 
             //Insert Persona into database
             int tuples = daoPersona.create(persona);
@@ -88,6 +88,50 @@ public final class StorageTest {
 
         }catch (IOException e){
             log.error("Error",e);
+        }
+    }
+
+    @Test
+    public void testRespository() {
+
+        log.debug("Testing Repository ..");
+        //The database to use (in RAM memory)
+        String databaseUrl = "jdbc:h2:mem:fivet_db";
+
+        //Connection source_ autoclose with the try/catch
+        try (ConnectionSource connectionSource = new JdbcConnectionSource(databaseUrl)) {
+
+            TableUtils.createTableIfNotExists(connectionSource,Persona.class);
+
+            // Testing connection null
+            //FIXME Arreglar prueba de connection null
+            //Assertions.assertThrows(RuntimeException.class, new RepositoryOrmLite<>(null, Persona.class));
+
+            Repository<Persona, Long> theRepo = new RepositoryOrmLite <> (connectionSource,Persona.class);
+
+            // Get the list of all. Size == 0
+            {
+                List<Persona> personas = theRepo.findAll();
+                Assertions.assertEquals(0, personas.size(), "Size != 0");
+            }
+
+            //Test the insert
+            //New Persona
+            Persona persona = new Persona("Andrea","Contreras","152532873", "acontreras@ucn.cl");
+            if (theRepo.create(persona)){
+                Assertions.fail("No se inserto la persona");
+            }
+
+            // Get the list of all. Size == 1
+            {
+                List<Persona> personas = theRepo.findAll();
+                Assertions.assertEquals(0, personas.size(), "Size != 0");
+            }
+
+            //TODO agregar mas test
+
+        }catch (IOException | SQLException e){
+            throw new RuntimeException();
         }
     }
 }
