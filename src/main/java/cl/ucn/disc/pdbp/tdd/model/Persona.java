@@ -58,6 +58,9 @@ public class Persona {
     @DatabaseField(canBeNull = false, index = true)
     private String rut;
 
+    @DatabaseField(canBeNull = false)
+    private String email;
+
     /**
      * Empty Constructor
      */
@@ -71,7 +74,7 @@ public class Persona {
      * @param apellido a usar
      * @param rut valido
      */
-    public Persona(String nombre, String apellido, String rut) {
+    public Persona(String nombre, String apellido, String rut, String email) {
         if (nombre == null){ throw new NullPointerException("Nombre invalido");}
         if (apellido == null) {throw new NullPointerException("Apellido invalido");}
         if (rut == null) {throw new NullPointerException("Rut invalido");}
@@ -82,6 +85,7 @@ public class Persona {
         this.nombre = nombre;
         this.apellido = apellido;
         this.rut = rut;
+        this.email = email;
     }
 
     /**
