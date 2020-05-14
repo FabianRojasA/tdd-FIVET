@@ -181,7 +181,7 @@ public final class StorageTest {
 
 
         }catch (SQLException | IOException exception){
-            throw new RuntimeException();
+            throw new RuntimeException(exception);
         }
     }
 }
