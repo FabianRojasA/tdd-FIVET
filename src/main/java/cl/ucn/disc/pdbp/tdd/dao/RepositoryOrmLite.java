@@ -52,10 +52,13 @@ public final class RepositoryOrmLite <T, k> implements Repository <T, k>  {
         }
     }
 
-    //TODO Implemntar metodo
     @Override
     public T findById(k id) {
-        return null;
+        try {
+            return theDao.queryForId(id);
+        }catch (SQLException throwables){
+            throw new RuntimeException(throwables);
+        }
     }
 
     @Override
