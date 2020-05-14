@@ -26,52 +26,76 @@
 package cl.ucn.disc.pdbp.tdd.model;
 
 
+import cl.ucn.disc.pdbp.tdd.dao.ZonedDateTimeType;
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
+
 import java.time.ZonedDateTime;
 
+@DatabaseTable (tableName = "ficha")
 public class Ficha {
 
+    @DatabaseField(generatedId = true)
+    private Long id;
     /**
      * Numero de ficha.
      * Debe ser correlativo
      */
-    private final int numeroFicha;
+    @DatabaseField
+    private int numeroFicha;
 
     /**
      * Nombre del paciente
      */
-    private final String nombrePaciente;
+    @DatabaseField
+    private String nombrePaciente;
 
     /**
      * Especie del paciente
      */
-    private final String especie;
+    @DatabaseField
+    private String especie;
 
     /**
      * Fecha de nacimiento del paciente
      */
-    private final ZonedDateTime fechaNacimiento;
+    @DatabaseField(persisterClass = ZonedDateTimeType.class)
+    private ZonedDateTime fechaNacimiento;
 
     /**
      * Raza del paciente
      */
-    private final String raza;
+    @DatabaseField
+    private String raza;
 
     /**
      * Sexo del paciente
      * MACHO o HEMBRA
      */
-    private final Sexo sexo;
+    @DatabaseField
+    private Sexo sexo;
 
     /**
      * Color del paciente
      */
-    private final String color;
+    @DatabaseField
+    private String color;
 
     /**
      * Tipo de paciente
      * INTERNO o EXTERNO
      */
-    private final TipoPaciente tipoPaciente;
+    @DatabaseField
+    private TipoPaciente tipoPaciente;
+
+    @DatabaseField (foreign = true, foreignAutoRefresh = true)
+    private Persona duenio;
+
+    /**
+     * Constructor vacio
+     */
+    public Ficha() {
+    }
 
     /**
      * Constructor de una ficha
@@ -84,7 +108,7 @@ public class Ficha {
      * @param color del paciente
      * @param tipoPaciente a usar
      */
-    public Ficha(int numeroFicha, String nombrePaciente, String especie, ZonedDateTime fechaNacimiento, String raza, Sexo sexo, String color, TipoPaciente tipoPaciente) {
+    public Ficha(int numeroFicha, String nombrePaciente, String especie, ZonedDateTime fechaNacimiento, String raza, Sexo sexo, String color, TipoPaciente tipoPaciente, Persona duenio) {
         this.numeroFicha = numeroFicha;
         this.nombrePaciente = nombrePaciente;
         this.especie = especie;
@@ -93,6 +117,7 @@ public class Ficha {
         this.sexo = sexo;
         this.color = color;
         this.tipoPaciente = tipoPaciente;
+        this.duenio = duenio;
     }
 
     /**
@@ -149,5 +174,13 @@ public class Ficha {
      */
     public TipoPaciente getTipoPaciente() {
         return tipoPaciente;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Persona getDuenio() {
+        return duenio;
     }
 }
