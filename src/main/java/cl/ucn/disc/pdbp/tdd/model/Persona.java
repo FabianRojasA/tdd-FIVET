@@ -73,6 +73,13 @@ public class Persona {
     if (!Validation.isRutValid(rut)) {
       throw new RuntimeException();
     }
+    if (email == null) {
+      throw new NullPointerException();
+    }
+
+    if (Validation.isEmailValid(email)) {
+      throw new RuntimeException();
+    }
 
     if (nombre.length() < 2) {
       throw new RuntimeException("Nombre invalido");
@@ -88,6 +95,7 @@ public class Persona {
 
   /**
    * Retorna el nombre de la persona.
+   *
    * @return nombre
    */
   public String getNombre() {
@@ -96,6 +104,7 @@ public class Persona {
 
   /**
    * Retorna el apellido de la persona.
+   *
    * @return apellido
    */
   public String getApellido() {
@@ -104,6 +113,7 @@ public class Persona {
 
   /**
    * Retorna un string que concatena el nombre y apellido de la persona.
+   *
    * @return nombre espacio apellido
    */
   public String getNombreApellido() {
@@ -112,6 +122,7 @@ public class Persona {
 
   /**
    * Retorna el rut de la persona.
+   *
    * @return rut
    */
   public String getRut() {
@@ -120,9 +131,19 @@ public class Persona {
 
   /**
    * Retorna el id.
+   *
    * @return id
    */
   public long getId() {
     return id;
+  }
+
+  /**
+   * Retorna el email de la persona.
+   *
+   * @return email
+   */
+  public String getEmail() {
+    return this.email;
   }
 }
