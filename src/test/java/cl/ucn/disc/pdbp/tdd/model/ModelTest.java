@@ -56,10 +56,13 @@ public final class ModelTest {
     String email = "acontreras@ucn.cl";
 
     // Test constructor and getters
+    Persona vacio = new Persona();
     Persona persona = new Persona(nombre, apellido, rutOk, email);
     Assertions.assertEquals(persona.getNombre(), nombre);
     Assertions.assertEquals(persona.getApellido(), apellido);
     Assertions.assertEquals(persona.getNombreApellido(), nombreApellido);
+    Assertions.assertEquals(persona.getRut(), rutOk);
+    Assertions.assertEquals(persona.getEmail(), email);
 
     // Testing nullity
     log.debug(".. nullity ..");
@@ -75,13 +78,25 @@ public final class ModelTest {
         NullPointerException.class, () -> new Persona(nombre, null, rutOk, null));
     Assertions.assertThrows(
         NullPointerException.class, () -> new Persona(nombre, apellido, null, null));
+    Assertions.assertThrows(
+        NullPointerException.class, () -> new Persona(nombre, apellido, rutOk, null));
 
     // Testing invalid rut
     log.debug(".. rut ..");
     Assertions.assertThrows(
         RuntimeException.class, () -> new Persona(nombre, apellido, rutError, email));
 
+    //Testing valid email
+    log.debug(".. email ..");
+    Assertions.assertThrows(RuntimeException.class, () -> new Persona (nombre, apellido, rutOk, ""));
+    Assertions.assertThrows(RuntimeException.class, () -> new Persona (nombre, apellido, rutOk, "a"));
+    Assertions.assertThrows(RuntimeException.class, () -> new Persona (nombre, apellido, rutOk, "a@a"));
+    Assertions.assertThrows(RuntimeException.class, () -> new Persona (nombre, apellido, rutOk, "a@.com"));
+    Assertions.assertThrows(RuntimeException.class, () -> new Persona (nombre, apellido, rutOk, "1@.com"));
+
+
     // Testing parameter's size
+    log.debug(".. Parameter's size ..");
     Assertions.assertThrows(RuntimeException.class, () -> new Persona("", apellido, rutOk, email));
     Assertions.assertThrows(RuntimeException.class, () -> new Persona("a", apellido, rutOk, email));
     Assertions.assertThrows(RuntimeException.class, () -> new Persona(nombre, "", rutOk, email));
@@ -96,7 +111,6 @@ public final class ModelTest {
     Assertions.assertThrows(RuntimeException.class, () -> new Persona("a", "a", rutOk, email));
     Assertions.assertThrows(RuntimeException.class, () -> new Persona("a", "aa", rutOk, email));
 
-    // TODO Crear pruebas para el correo
 
     log.debug("Done.");
   }
