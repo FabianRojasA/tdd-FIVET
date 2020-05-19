@@ -66,7 +66,7 @@ public class Validation {
    * @param email a validar
    * @return true si es valido - false si es invalido
    */
-  static boolean isValid(String email) {
+  public static boolean isEmailValid(String email) {
     String regex = "^[\\w-_\\.+]*[\\w-_\\.]\\@([\\w]+\\.)+[\\w]+[\\w]$";
     return email.matches(regex);
   }
