@@ -77,7 +77,7 @@ public class Persona {
       throw new NullPointerException();
     }
 
-    if (Validation.isEmailValid(email)) {
+    if (!Validation.isEmailValid(email)) {
       throw new RuntimeException();
     }
 
