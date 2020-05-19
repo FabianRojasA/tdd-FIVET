@@ -26,19 +26,16 @@ package cl.ucn.disc.pdbp.tdd.dao;
 
 import java.util.List;
 
-/**
- * Capa de acceso a los datos
- */
+/** Capa de acceso a los datos. */
 public interface Repository<T, K> {
 
-    List<T> findAll();
+  List<T> findAll();
 
-    T findById(K id);
+  T findById(K id);
 
-    boolean create (T t);
+  boolean create(T t);
 
-    boolean update (T t);
+  boolean update(T t);
 
-    boolean delete(K id);
-
+  boolean delete(K id);
 }
