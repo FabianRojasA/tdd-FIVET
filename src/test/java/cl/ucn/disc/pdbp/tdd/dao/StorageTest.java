@@ -38,6 +38,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.time.ZonedDateTime;
 import java.util.List;
+import javafx.scene.control.Tab;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -107,10 +108,10 @@ public final class StorageTest {
 
       TableUtils.createTableIfNotExists(connectionSource, Persona.class);
 
+      log.debug("Testing null connection ..");
       // Testing connection null
-      // FIXME Arreglar prueba de connection null
-      // Assertions.assertThrows(RuntimeException.class, new RepositoryOrmLite<>(null,
-      // Persona.class));
+      Assertions.assertThrows(
+          RuntimeException.class, () -> new RepositoryOrmLite<>(null, Persona.class));
 
       Repository<Persona, Long> theRepo = new RepositoryOrmLite<>(connectionSource, Persona.class);
 
@@ -123,20 +124,24 @@ public final class StorageTest {
       // Test the insert
       // New Persona
       Persona persona = new Persona("Andrea", "Contreras", "152532873", "acontreras@ucn.cl");
-      if (theRepo.create(persona)) {
+      if (!theRepo.create(persona)) {
         Assertions.fail("No se inserto la persona");
       }
 
       // Get the list of all. Size == 1
       {
         List<Persona> personas = theRepo.findAll();
-        Assertions.assertEquals(0, personas.size(), "Size != 0");
+
+        for (Persona per : personas){
+          Assertions.assertEquals(1,per.getId());
+        }
+        Assertions.assertEquals(1, personas.size(), "Size != 1");
       }
 
       // TODO agregar mas test
 
     } catch (IOException | SQLException e) {
-      throw new RuntimeException();
+      throw new RuntimeException(e);
     }
   }
 
