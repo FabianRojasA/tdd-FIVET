@@ -27,59 +27,62 @@ package cl.ucn.disc.pdbp.tdd.dao;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.support.ConnectionSource;
-
 import java.sql.SQLException;
 import java.util.List;
 
-public final class RepositoryOrmLite <T, k> implements Repository <T, k>  {
+public final class RepositoryOrmLite<T, K> implements Repository<T, K> {
 
-    private final Dao<T,k> theDao;
+  private final Dao<T, K> theDao;
 
-    public RepositoryOrmLite(ConnectionSource connectionSource, Class<T> theClass) {
-        try {
-            theDao = DaoManager.createDao(connectionSource,theClass);
-        }catch (SQLException throwables){
-            throw new RuntimeException(throwables);
-        }
+  /**
+   * Crea un repositorio ORMLite para cualquier tipo de Clase.
+   * @param connectionSource a conectar
+   * @param theClass a definir
+   */
+  public RepositoryOrmLite(ConnectionSource connectionSource, Class<T> theClass) {
+    try {
+      theDao = DaoManager.createDao(connectionSource, theClass);
+    } catch (SQLException throwables) {
+      throw new RuntimeException(throwables);
     }
+  }
 
-    @Override
-    public List<T> findAll() {
-        try {
-            return theDao.queryForAll();
-        }catch (SQLException throwables){
-            throw new RuntimeException();
-        }
+  @Override
+  public List<T> findAll() {
+    try {
+      return theDao.queryForAll();
+    } catch (SQLException throwables) {
+      throw new RuntimeException();
     }
+  }
 
-    @Override
-    public T findById(k id) {
-        try {
-            return theDao.queryForId(id);
-        }catch (SQLException throwables){
-            throw new RuntimeException(throwables);
-        }
+  @Override
+  public T findById(K id) {
+    try {
+      return theDao.queryForId(id);
+    } catch (SQLException throwables) {
+      throw new RuntimeException(throwables);
     }
+  }
 
-    @Override
-    public boolean create(T t) {
-        try {
-            return theDao.create(t) == 1;
-        }catch (SQLException throwables){
-            throw new RuntimeException((throwables));
-        }
-
+  @Override
+  public boolean create(T t) {
+    try {
+      return theDao.create(t) == 1;
+    } catch (SQLException throwables) {
+      throw new RuntimeException((throwables));
     }
+  }
 
-    //TODO Implemntar metodo
-    @Override
-    public boolean update(T t) {
-        return false;
-    }
+  // TODO Implemntar metodo
+  @Override
+  public boolean update(T t) {
+    return false;
+  }
 
-    //TODO Implemntar metodo
-    @Override
-    public boolean delete(k id) {
-        return false;
-    }
+  // TODO Implemntar metodo
+  @Override
+  public boolean delete(K id) {
+    return false;
+  }
 }
