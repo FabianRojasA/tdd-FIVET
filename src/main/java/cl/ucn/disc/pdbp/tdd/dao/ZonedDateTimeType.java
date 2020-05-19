@@ -28,7 +28,6 @@ import com.j256.ormlite.field.FieldType;
 import com.j256.ormlite.field.SqlType;
 import com.j256.ormlite.field.types.BaseDataType;
 import com.j256.ormlite.support.DatabaseResults;
-
 import java.sql.SQLException;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -42,85 +41,86 @@ import java.time.temporal.TemporalAccessor;
 @SuppressWarnings({"StaticVariableOfConcreteClass", "Singleton"})
 public final class ZonedDateTimeType extends BaseDataType {
 
-    /**
-     * The formatter (2011-12-03T10:15:30+01:00)
-     */
-    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
+  /** The formatter (2011-12-03T10:15:30+01:00). */
+  private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
 
-    /**
-     * The Singleton.
-     */
-    public static final ZonedDateTimeType SINGLETON = new ZonedDateTimeType();
+  /** The Singleton. */
+  public static final ZonedDateTimeType SINGLETON = new ZonedDateTimeType();
 
-    /**
-     * @return the singleton.
-     */
-    public static ZonedDateTimeType getSingleton() {
-        return SINGLETON;
+  /**
+   * Obtener el singleton.
+   * @return SINGLETON
+   */
+  public static ZonedDateTimeType getSingleton() {
+    return SINGLETON;
+  }
+
+  /** The Constructor. */
+  private ZonedDateTimeType() {
+    // ZonedDateTime <-> String
+    super(SqlType.STRING, new Class<?>[] {ZonedDateTime.class});
+  }
+
+  /**
+   * Obtener el tamanio por defecto definido.
+   * @see BaseDataType#getDefaultWidth()
+   * @return 64
+   */
+  @Override
+  public int getDefaultWidth() {
+    // https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/time/format/DateTimeFormatter.html
+    // Size of string: VARCHAR(64)
+    return 64;
+  }
+
+  /**
+   * Convierte el tipo de dato de la base de datos a Java.
+   * @see BaseDataType#sqlArgToJava(FieldType, Object, int)
+   */
+  @Override
+  public Object sqlArgToJava(FieldType fieldType, Object sqlArg, int columnPos) {
+
+    // Nullity test
+    if (sqlArg == null) {
+      return null;
     }
 
-    /**
-     * The Constructor.
-     */
-    private ZonedDateTimeType() {
-        // ZonedDateTime <-> String
-        super(SqlType.STRING, new Class<?>[]{ZonedDateTime.class});
+    // String to ZonedDateTime
+    return ZonedDateTime.parse((CharSequence) sqlArg, FORMATTER);
+  }
+
+  /**
+   * Crea declaraciones de INSERT o UPDATE a partir de un string.
+   * @see BaseDataType#parseDefaultString(FieldType, String)
+   */
+  @Override
+  public Object parseDefaultString(FieldType fieldType, String defaultStr) {
+    return this.sqlArgToJava(fieldType, defaultStr, 0);
+  }
+
+  /**
+   * Crea declaraciones de INSERT o UPDATE a partir de un OBJETO de Java.
+   * @see BaseDataType#javaToSqlArg(FieldType, Object)
+   */
+  @Override
+  public Object javaToSqlArg(FieldType fieldType, Object javaObject) {
+
+    // Nullity test
+    if (javaObject == null) {
+      return null;
     }
 
-    /**
-     * @see BaseDataType#getDefaultWidth()
-     */
-    @Override
-    public int getDefaultWidth() {
-        // https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/time/format/DateTimeFormatter.html
-        // Size of string: VARCHAR(64)
-        return 64;
-    }
+    // ZonedDateTime to String
+    return FORMATTER.format((TemporalAccessor) javaObject);
+  }
 
-    /**
-     * @see BaseDataType#sqlArgToJava(FieldType, Object, int)
-     */
-    @Override
-    public Object sqlArgToJava(FieldType fieldType, Object sqlArg, int columnPos) {
-
-        // Nullity test
-        if (sqlArg == null) {
-            return null;
-        }
-
-        // String to ZonedDateTime
-        return ZonedDateTime.parse((CharSequence) sqlArg, FORMATTER);
-    }
-
-    /**
-     * @see BaseDataType#parseDefaultString(FieldType, String)
-     */
-    @Override
-    public Object parseDefaultString(FieldType fieldType, String defaultStr) {
-        return this.sqlArgToJava(fieldType, defaultStr, 0);
-    }
-
-    /**
-     * @see BaseDataType#javaToSqlArg(FieldType, Object)
-     */
-    @Override
-    public Object javaToSqlArg(FieldType fieldType, Object javaObject) {
-
-        // Nullity test
-        if (javaObject == null) {
-            return null;
-        }
-
-        // ZonedDateTime to String
-        return FORMATTER.format((TemporalAccessor) javaObject);
-    }
-
-    /**
-     * @see BaseDataType#resultToSqlArg(FieldType, DatabaseResults, int)
-     */
-    @Override
-    public Object resultToSqlArg(FieldType fieldType, DatabaseResults results, int columnPos) throws SQLException {
-        return results.getString(columnPos);
-    }
-
+  /**
+   * Obtiene un Objeto a partir de los resultados asociados a la columna.
+   * @see BaseDataType#resultToSqlArg(FieldType, DatabaseResults, int)
+   * */
+  @Override
+  public Object resultToSqlArg(FieldType fieldType, DatabaseResults results, int columnPos)
+      throws SQLException {
+    return results.getString(columnPos);
+  }
 }
