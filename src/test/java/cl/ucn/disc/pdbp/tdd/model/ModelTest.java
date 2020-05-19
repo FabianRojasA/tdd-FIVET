@@ -1,4 +1,3 @@
-
 /*
  * MIT License
  *
@@ -31,98 +30,91 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * Model test.
- */
+/** Model test. */
 public final class ModelTest {
 
-    /**
-     * The Logger (console)
-     */
-    private static final Logger log = LoggerFactory.getLogger(ModelTest.class);
+  /** The Logger (console). */
+  private static final Logger log = LoggerFactory.getLogger(ModelTest.class);
 
-    /**
-     * Test the Persona.
-     * - El nombre no puede ser null.
-     * - El nombre debe tener al menos 2 letras.
-     * - El apellido no puede ser null.
-     * - El apellido debe tener al menos 3 letras.
-     * - El rut debe ser valido.
-     */
-    @Test
-    public void testPersona() {
+  /**
+   * Test the Persona. - El nombre no puede ser null. - El nombre debe tener al menos 2 letras. - El
+   * apellido no puede ser null. - El apellido debe tener al menos 3 letras. - El rut debe ser
+   * valido.
+   */
+  @Test
+  public void testPersona() {
 
-        log.debug("Testing Persona ..");
+    log.debug("Testing Persona ..");
 
-        // The data!
-        log.debug(".. valid ..");
-        String nombre = "Andrea";
-        String apellido = "Contreras";
-        String nombreApellido = nombre + " " + apellido;
-        String rutOk = "152532873";
-        String rutError = "15253287K";
-        String email = "acontreras@ucn.cl";
+    // The data!
+    log.debug(".. valid ..");
+    String nombre = "Andrea";
+    String apellido = "Contreras";
+    String nombreApellido = nombre + " " + apellido;
+    String rutOk = "152532873";
+    final String rutError = "15253287K";
+    String email = "acontreras@ucn.cl";
 
-        // Test constructor and getters
-        Persona persona = new Persona(nombre, apellido, rutOk,email);
-        Assertions.assertEquals(persona.getNombre(), nombre);
-        Assertions.assertEquals(persona.getApellido(), apellido);
-        Assertions.assertEquals(persona.getNombreApellido(), nombreApellido);
+    // Test constructor and getters
+    Persona persona = new Persona(nombre, apellido, rutOk, email);
+    Assertions.assertEquals(persona.getNombre(), nombre);
+    Assertions.assertEquals(persona.getApellido(), apellido);
+    Assertions.assertEquals(persona.getNombreApellido(), nombreApellido);
 
-        // Testing nullity
-        log.debug(".. nullity ..");
-        Assertions.assertThrows(NullPointerException.class, () -> new Persona(null, null, null, null));
-        Assertions.assertThrows(NullPointerException.class, () -> new Persona(null, null, rutOk,null));
-        Assertions.assertThrows(NullPointerException.class, () -> new Persona(null, apellido, null,null));
-        Assertions.assertThrows(NullPointerException.class, () -> new Persona(null, apellido, rutOk,null));
-        Assertions.assertThrows(NullPointerException.class, () -> new Persona(nombre, null, null,null));
-        Assertions.assertThrows(NullPointerException.class, () -> new Persona(nombre, null, rutOk,null));
-        Assertions.assertThrows(NullPointerException.class, () -> new Persona(nombre, apellido, null, null));
+    // Testing nullity
+    log.debug(".. nullity ..");
+    Assertions.assertThrows(NullPointerException.class, () -> new Persona(null, null, null, null));
+    Assertions.assertThrows(NullPointerException.class, () -> new Persona(null, null, rutOk, null));
+    Assertions.assertThrows(
+        NullPointerException.class, () -> new Persona(null, apellido, null, null));
+    Assertions.assertThrows(
+        NullPointerException.class, () -> new Persona(null, apellido, rutOk, null));
+    Assertions.assertThrows(
+        NullPointerException.class, () -> new Persona(nombre, null, null, null));
+    Assertions.assertThrows(
+        NullPointerException.class, () -> new Persona(nombre, null, rutOk, null));
+    Assertions.assertThrows(
+        NullPointerException.class, () -> new Persona(nombre, apellido, null, null));
 
-        // Testing invalid rut
-        log.debug(".. rut ..");
-        Assertions.assertThrows(RuntimeException.class, () -> new Persona(nombre, apellido, rutError,email));
+    // Testing invalid rut
+    log.debug(".. rut ..");
+    Assertions.assertThrows(
+        RuntimeException.class, () -> new Persona(nombre, apellido, rutError, email));
 
-        // Testing parameter's size
-        Assertions.assertThrows(RuntimeException.class, ()-> new Persona("",apellido,rutOk,email));
-        Assertions.assertThrows(RuntimeException.class, ()-> new Persona("a",apellido,rutOk,email));
-        Assertions.assertThrows(RuntimeException.class, ()-> new Persona(nombre,"",rutOk,email));
-        Assertions.assertThrows(RuntimeException.class, ()-> new Persona(nombre,"a",rutOk,email));
-        Assertions.assertThrows(RuntimeException.class, ()-> new Persona(nombre,"aa",rutOk,email));
+    // Testing parameter's size
+    Assertions.assertThrows(RuntimeException.class, () -> new Persona("", apellido, rutOk, email));
+    Assertions.assertThrows(RuntimeException.class, () -> new Persona("a", apellido, rutOk, email));
+    Assertions.assertThrows(RuntimeException.class, () -> new Persona(nombre, "", rutOk, email));
+    Assertions.assertThrows(RuntimeException.class, () -> new Persona(nombre, "a", rutOk, email));
+    Assertions.assertThrows(RuntimeException.class, () -> new Persona(nombre, "aa", rutOk, email));
 
-        Assertions.assertThrows(RuntimeException.class, ()-> new Persona("","",rutOk,email));
-        Assertions.assertThrows(RuntimeException.class, ()-> new Persona("","a",rutOk,email));
-        Assertions.assertThrows(RuntimeException.class, ()-> new Persona("","aa",rutOk,email));
+    Assertions.assertThrows(RuntimeException.class, () -> new Persona("", "", rutOk, email));
+    Assertions.assertThrows(RuntimeException.class, () -> new Persona("", "a", rutOk, email));
+    Assertions.assertThrows(RuntimeException.class, () -> new Persona("", "aa", rutOk, email));
 
-        Assertions.assertThrows(RuntimeException.class, ()-> new Persona("a","",rutOk,email));
-        Assertions.assertThrows(RuntimeException.class, ()-> new Persona("a","a",rutOk,email));
-        Assertions.assertThrows(RuntimeException.class, ()-> new Persona("a","aa",rutOk,email));
+    Assertions.assertThrows(RuntimeException.class, () -> new Persona("a", "", rutOk, email));
+    Assertions.assertThrows(RuntimeException.class, () -> new Persona("a", "a", rutOk, email));
+    Assertions.assertThrows(RuntimeException.class, () -> new Persona("a", "aa", rutOk, email));
 
-        //TODO Crear pruebas para el correo
+    // TODO Crear pruebas para el correo
 
-        log.debug("Done.");
+    log.debug("Done.");
+  }
 
-    }
+  /** Test the digito verificador. */
+  @Test
+  public void testDigitoVerificador() {
 
-    /**
-     * Test the digito verificador.
-     */
-    @Test
-    public void testDigitoVerificador() {
+    Assertions.assertFalse(Validation.isRutValid(null));
 
-        Assertions.assertFalse(Validation.isRutValid(null));
+    Assertions.assertTrue(Validation.isRutValid("152532873"));
+    Assertions.assertTrue(Validation.isRutValid("21195194K"));
+    Assertions.assertTrue(Validation.isRutValid("121244071"));
+    Assertions.assertTrue(Validation.isRutValid("198127949"));
+    Assertions.assertTrue(Validation.isRutValid("202294316"));
 
-        Assertions.assertTrue(Validation.isRutValid("152532873"));
-        Assertions.assertTrue(Validation.isRutValid("21195194K"));
-        Assertions.assertTrue(Validation.isRutValid("121244071"));
-        Assertions.assertTrue(Validation.isRutValid("198127949"));
-        Assertions.assertTrue(Validation.isRutValid("202294316"));
-
-        Assertions.assertFalse(Validation.isRutValid("1525A2873"));
-        Assertions.assertFalse(Validation.isRutValid("15253287K"));
-        Assertions.assertFalse(Validation.isRutValid("15253287-"));
-
-    }
-
-
+    Assertions.assertFalse(Validation.isRutValid("1525A2873"));
+    Assertions.assertFalse(Validation.isRutValid("15253287K"));
+    Assertions.assertFalse(Validation.isRutValid("15253287-"));
+  }
 }
