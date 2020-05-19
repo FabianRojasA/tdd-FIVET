@@ -34,154 +34,164 @@ import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.jdbc.JdbcConnectionSource;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.ZonedDateTime;
 import java.util.List;
-
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 public final class StorageTest {
 
-    private static final Logger log = LoggerFactory.getLogger(StorageTest.class);
+  private static final Logger log = LoggerFactory.getLogger(StorageTest.class);
 
-    /**
-     * Testing the ORMLite + h2 (database)
-     * @throws SQLException
-     */
-    @Test
-    public void testDatabase() throws SQLException {
+  /**
+   * Testing the ORMLite + h2 (database).
+   *
+   * @throws SQLException a lanzar
+   */
+  @Test
+  public void testDatabase() throws SQLException {
 
-        log.debug("Testing DataBase ..");
-        //The database to use (in RAM memory)
-        String databaseUrl = "jdbc:h2:mem:fivet_db";
+    log.debug("Testing DataBase ..");
+    // The database to use (in RAM memory)
+    String databaseUrl = "jdbc:h2:mem:fivet_db";
 
-        //Connection source_ autoclose with the try/catch
-        try (ConnectionSource connectionSource = new JdbcConnectionSource(databaseUrl)) {
+    // Connection source_ autoclose with the try/catch
+    try (ConnectionSource connectionSource = new JdbcConnectionSource(databaseUrl)) {
 
-            //Create the table from the Persona annotations
-            TableUtils.createTableIfNotExists(connectionSource, Persona.class);
+      // Create the table from the Persona annotations
+      TableUtils.createTableIfNotExists(connectionSource, Persona.class);
 
-            //The dao of PErsona
-            Dao<Persona, Long> daoPersona = DaoManager.createDao(connectionSource,Persona.class);
+      // The dao of PErsona
+      Dao<Persona, Long> daoPersona = DaoManager.createDao(connectionSource, Persona.class);
 
-            //New Persona
-            Persona persona = new Persona("Andrea","Contreras","152532873", "acontreras@ucn.cl");
+      // New Persona
+      Persona persona = new Persona("Andrea", "Contreras", "152532873", "acontreras@ucn.cl");
 
-            //Insert Persona into database
-            int tuples = daoPersona.create(persona);
-            log.debug("Id: {}", persona.getId());
-            Assertions.assertEquals(1,tuples,"Save tuples != 1");
+      // Insert Persona into database
+      int tuples = daoPersona.create(persona);
+      log.debug("Id: {}", persona.getId());
+      Assertions.assertEquals(1, tuples, "Save tuples != 1");
 
-            //Get from db
-            Persona personaDb = daoPersona.queryForId(persona.getId());
+      // Get from db
+      Persona personaDb = daoPersona.queryForId(persona.getId());
 
-            Assertions.assertEquals(persona.getNombre(),personaDb.getNombre(), "Nombre not equals");
-            Assertions.assertEquals(persona.getApellido(),personaDb.getApellido(), "Apellido not equals");
-            Assertions.assertEquals(persona.getRut(),personaDb.getRut(), "Rut not equals");
+      Assertions.assertEquals(persona.getNombre(), personaDb.getNombre(), "Nombre not equals");
+      Assertions.assertEquals(
+          persona.getApellido(), personaDb.getApellido(), "Apellido not equals");
+      Assertions.assertEquals(persona.getRut(), personaDb.getRut(), "Rut not equals");
 
-            //Search by rut: SELECT * FROM 'persona' WHERE 'rut' = '152532873'
-            List<Persona> personaList = daoPersona.queryForEq("rut","152532873");
-            Assertions.assertEquals(1,personaList.size(),"More than one person!?");
+      // Search by rut: SELECT * FROM 'persona' WHERE 'rut' = '152532873'
+      List<Persona> personaList = daoPersona.queryForEq("rut", "152532873");
+      Assertions.assertEquals(1, personaList.size(), "More than one person!?");
 
-            Assertions.assertEquals(0,daoPersona.queryForEq("rut","19").size(),"Found something!?");
+      Assertions.assertEquals(0, daoPersona.queryForEq("rut", "19").size(), "Found something!?");
 
-        }catch (IOException e){
-            log.error("Error",e);
-        }
+    } catch (IOException e) {
+      log.error("Error", e);
     }
+  }
 
-    @Test
-    public void testRespository() {
+  @Test
+  public void testRespository() {
 
-        log.debug("Testing Repository ..");
-        //The database to use (in RAM memory)
-        String databaseUrl = "jdbc:h2:mem:fivet_db";
+    log.debug("Testing Repository ..");
+    // The database to use (in RAM memory)
+    String databaseUrl = "jdbc:h2:mem:fivet_db";
 
-        //Connection source_ autoclose with the try/catch
-        try (ConnectionSource connectionSource = new JdbcConnectionSource(databaseUrl)) {
+    // Connection source_ autoclose with the try/catch
+    try (ConnectionSource connectionSource = new JdbcConnectionSource(databaseUrl)) {
 
-            TableUtils.createTableIfNotExists(connectionSource,Persona.class);
+      TableUtils.createTableIfNotExists(connectionSource, Persona.class);
 
-            // Testing connection null
-            //FIXME Arreglar prueba de connection null
-            //Assertions.assertThrows(RuntimeException.class, new RepositoryOrmLite<>(null, Persona.class));
+      // Testing connection null
+      // FIXME Arreglar prueba de connection null
+      // Assertions.assertThrows(RuntimeException.class, new RepositoryOrmLite<>(null,
+      // Persona.class));
 
-            Repository<Persona, Long> theRepo = new RepositoryOrmLite <> (connectionSource,Persona.class);
+      Repository<Persona, Long> theRepo = new RepositoryOrmLite<>(connectionSource, Persona.class);
 
-            // Get the list of all. Size == 0
-            {
-                List<Persona> personas = theRepo.findAll();
-                Assertions.assertEquals(0, personas.size(), "Size != 0");
-            }
+      // Get the list of all. Size == 0
+      {
+        List<Persona> personas = theRepo.findAll();
+        Assertions.assertEquals(0, personas.size(), "Size != 0");
+      }
 
-            //Test the insert
-            //New Persona
-            Persona persona = new Persona("Andrea","Contreras","152532873", "acontreras@ucn.cl");
-            if (theRepo.create(persona)){
-                Assertions.fail("No se inserto la persona");
-            }
+      // Test the insert
+      // New Persona
+      Persona persona = new Persona("Andrea", "Contreras", "152532873", "acontreras@ucn.cl");
+      if (theRepo.create(persona)) {
+        Assertions.fail("No se inserto la persona");
+      }
 
-            // Get the list of all. Size == 1
-            {
-                List<Persona> personas = theRepo.findAll();
-                Assertions.assertEquals(0, personas.size(), "Size != 0");
-            }
+      // Get the list of all. Size == 1
+      {
+        List<Persona> personas = theRepo.findAll();
+        Assertions.assertEquals(0, personas.size(), "Size != 0");
+      }
 
-            //TODO agregar mas test
+      // TODO agregar mas test
 
-        }catch (IOException | SQLException e){
-            throw new RuntimeException();
-        }
+    } catch (IOException | SQLException e) {
+      throw new RuntimeException();
     }
+  }
 
-    @Test
-    public void testRespositoryFicha(){
-        //The database to use (in RAM memory)
-        String databaseUrl = "jdbc:h2:mem:fivet_db";
+  @Test
+  public void testRespositoryFicha() {
+    // The database to use (in RAM memory)
+    String databaseUrl = "jdbc:h2:mem:fivet_db";
 
-        try (ConnectionSource connectionSource = new JdbcConnectionSource(databaseUrl)){
-            //Create the table in backend
-            TableUtils.createTableIfNotExists(connectionSource, Persona.class);
-            TableUtils.createTableIfNotExists(connectionSource, Ficha.class);
+    try (ConnectionSource connectionSource = new JdbcConnectionSource(databaseUrl)) {
+      // Create the table in backend
+      TableUtils.createTableIfNotExists(connectionSource, Persona.class);
+      TableUtils.createTableIfNotExists(connectionSource, Ficha.class);
 
-            Persona duenio = new Persona("andrea", "contreras", "192047692","email@gmail.com");
-            Repository<Ficha, Long> repositoryFicha = new RepositoryOrmLite<>(connectionSource, Ficha.class);
+      Persona duenio = new Persona("andrea", "contreras", "192047692", "email@gmail.com");
+      Repository<Ficha, Long> repositoryFicha =
+          new RepositoryOrmLite<>(connectionSource, Ficha.class);
 
-            {
-                //1. Crear la Persona desde un Repository
+      {
+        // 1. Crear la Persona desde un Repository
 
-                if (!new RepositoryOrmLite<Persona, Long>(connectionSource, Persona.class).create(duenio)) {
-                    Assertions.fail("Can't insert Persona!");
-                }
-
-                //2. Instanciar una ficha
-                Ficha ficha = new Ficha(123, "firulais", "canino", ZonedDateTime.now(), "yorkshire", Sexo.MACHO, "cafe con plomo", TipoPaciente.INTERNO, duenio);
-
-                //3. Crear la ficha
-                if (!repositoryFicha.create(ficha)) {
-                    Assertions.fail("Falla en crear la ficha");
-                }
-            }
-
-            //FIXME arreglar ficha
-            //4. Obtener una ficha y revisar si sus atributos son distintos de null
-            Ficha ficha = repositoryFicha.findById((long) 1);
-            Assertions.assertNotNull(ficha,"Ficha was null");
-            Assertions.assertNotNull(ficha.getDuenio(),"Ficha was null");
-            Assertions.assertNotNull(ficha.getDuenio().getRut(),"Rut del Duenio de Ficha was null");
-            Assertions.assertNotNull(ficha.getFechaNacimiento(),"FechaNacimiento was null");
-
-            log.debug("Ficha{}.", Entity.toString(ficha));
-
-
-        }catch (SQLException | IOException exception){
-            throw new RuntimeException(exception);
+        if (!new RepositoryOrmLite<Persona, Long>(connectionSource, Persona.class).create(duenio)) {
+          Assertions.fail("Can't insert Persona!");
         }
+
+        // 2. Instanciar una ficha
+        Ficha ficha =
+            new Ficha(
+                123,
+                "firulais",
+                "canino",
+                ZonedDateTime.now(),
+                "yorkshire",
+                Sexo.MACHO,
+                "cafe con plomo",
+                TipoPaciente.INTERNO,
+                duenio);
+
+        // 3. Crear la ficha
+        if (!repositoryFicha.create(ficha)) {
+          Assertions.fail("Falla en crear la ficha");
+        }
+      }
+
+      // FIXME arreglar ficha
+      // 4. Obtener una ficha y revisar si sus atributos son distintos de null
+      Ficha ficha = repositoryFicha.findById((long) 1);
+      Assertions.assertNotNull(ficha, "Ficha was null");
+      Assertions.assertNotNull(ficha.getDuenio(), "Ficha was null");
+      Assertions.assertNotNull(ficha.getDuenio().getRut(), "Rut del Duenio de Ficha was null");
+      Assertions.assertNotNull(ficha.getFechaNacimiento(), "FechaNacimiento was null");
+
+      log.debug("Ficha{}.", Entity.toString(ficha));
+
+    } catch (SQLException | IOException exception) {
+      throw new RuntimeException(exception);
     }
+  }
 }
