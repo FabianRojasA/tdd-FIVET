@@ -24,6 +24,7 @@
 
 package cl.ucn.disc.pdbp.tdd.dao;
 
+import com.j256.ormlite.stmt.QueryBuilder;
 import java.util.List;
 
 /** Capa de acceso a los datos. */
@@ -40,4 +41,6 @@ public interface Repository<T, K> {
   boolean update(T t);
 
   boolean delete(K id);
+
+  QueryBuilder<T, K> getQuery();
 }
