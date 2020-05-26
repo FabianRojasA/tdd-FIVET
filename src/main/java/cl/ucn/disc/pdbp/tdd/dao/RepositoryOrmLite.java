@@ -26,6 +26,7 @@ package cl.ucn.disc.pdbp.tdd.dao;
 
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
+import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.support.ConnectionSource;
 import java.sql.SQLException;
 import java.util.List;
@@ -67,6 +68,11 @@ public final class RepositoryOrmLite<T, K> implements Repository<T, K> {
 
   @Override
   public T findById(K id) {
+
+    if (id == null) {
+      throw new IllegalArgumentException("Can't find null id");
+    }
+
     try {
       return theDao.queryForId(id);
     } catch (SQLException throwables) {
@@ -76,6 +82,11 @@ public final class RepositoryOrmLite<T, K> implements Repository<T, K> {
 
   @Override
   public boolean create(T t) {
+
+    if (t == null) {
+      throw new IllegalArgumentException("Can't create a null");
+    }
+
     try {
       return theDao.create(t) == 1;
     } catch (SQLException throwables) {
@@ -83,16 +94,37 @@ public final class RepositoryOrmLite<T, K> implements Repository<T, K> {
     }
   }
 
-  // TODO Implemntar metodo
   @Override
   public boolean update(T t) {
-    return false;
+
+    if (t == null) {
+      throw new IllegalArgumentException("Can't update to null");
+    }
+
+    try {
+      return theDao.update(t) == 1;
+    } catch (SQLException throwables) {
+      throw new RuntimeException(throwables);
+    }
   }
 
-  // TODO Implemntar metodo
   @Override
   public boolean delete(K id) {
-    return false;
+
+    if (id == null) {
+      throw  new IllegalArgumentException("Can't delete a null id");
+    }
+
+    try {
+      return theDao.deleteById(id) == 1;
+    } catch (SQLException throwables) {
+      throw new RuntimeException(throwables);
+    }
+  }
+
+  @Override
+  public QueryBuilder<T, K> getQuery() {
+    return theDao.queryBuilder();
   }
 
 
