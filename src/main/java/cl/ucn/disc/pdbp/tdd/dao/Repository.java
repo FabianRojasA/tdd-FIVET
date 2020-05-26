@@ -31,6 +31,8 @@ public interface Repository<T, K> {
 
   List<T> findAll();
 
+  List<T> findAll(String key, Object value);
+
   T findById(K id);
 
   boolean create(T t);
