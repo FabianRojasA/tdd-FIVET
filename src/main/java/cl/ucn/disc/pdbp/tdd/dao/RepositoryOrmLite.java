@@ -57,6 +57,15 @@ public final class RepositoryOrmLite<T, K> implements Repository<T, K> {
   }
 
   @Override
+  public List<T> findAll(String key, Object value) {
+    try {
+      return theDao.queryForEq(key, value);
+    } catch (SQLException throwables) {
+      throw new RuntimeException(throwables);
+    }
+  }
+
+  @Override
   public T findById(K id) {
     try {
       return theDao.queryForId(id);
@@ -85,4 +94,6 @@ public final class RepositoryOrmLite<T, K> implements Repository<T, K> {
   public boolean delete(K id) {
     return false;
   }
+
+
 }
