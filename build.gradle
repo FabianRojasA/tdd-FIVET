@@ -69,4 +69,7 @@ dependencies {
     //ToString provider (Apache Commons Lang)
     implementation 'org.apache.commons:commons-lang3:3.10'
 
+    // HTTP Javalin server
+    implementation 'io.javalin:javalin:3.8.0'
+    implementation 'com.google.code.gson:gson:2.8.6'
 }
