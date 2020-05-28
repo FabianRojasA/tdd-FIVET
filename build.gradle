@@ -65,6 +65,7 @@ dependencies {
 
     //Database Driver
     implementation 'com.h2database:h2:1.4.200'
+    implementation 'org.xerial:sqlite-jdbc:3.31.1'
 
     //ToString provider (Apache Commons Lang)
     implementation 'org.apache.commons:commons-lang3:3.10'
@@ -72,4 +73,5 @@ dependencies {
     // HTTP Javalin server
     implementation 'io.javalin:javalin:3.8.0'
     implementation 'com.google.code.gson:gson:2.8.6'
+
 }
