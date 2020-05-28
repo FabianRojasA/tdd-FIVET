@@ -56,4 +56,8 @@ public interface Contratos {
    */
   List<Ficha> buscarFicha (String query);
 
+  Persona findByRut (String rut);
+
+  List<Ficha> getAllFichas();
+
 }
