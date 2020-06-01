@@ -26,6 +26,7 @@
 
 package cl.ucn.disc.pdbp.tdd;
 
+import cl.ucn.disc.pdbp.tdd.model.Control;
 import cl.ucn.disc.pdbp.tdd.model.Ficha;
 import cl.ucn.disc.pdbp.tdd.model.Persona;
 import java.util.List;
@@ -46,18 +47,21 @@ public interface Contratos {
    * @param persona to insert.
    * @return the {@link Persona} in the backend.
    */
-  Persona registrarPersona (Persona persona);
+  Persona registrarPersona(Persona persona);
 
   /**
-   * Contrato: C03 - Buscar Ficha
+   * Contrato: C03 - Buscar Ficha.
    *
    * @param query to search.
    * @return the {@link List} of {@link Ficha}
    */
-  List<Ficha> buscarFicha (String query);
+  List<Ficha> buscarFicha(String query);
 
-  Persona findByRut (String rut);
+  Persona findByRut(String rut);
 
   List<Ficha> getAllFichas();
 
+  List<Persona> getAllPersonas();
+
+  List<Control> findByNumero(String query);
 }
