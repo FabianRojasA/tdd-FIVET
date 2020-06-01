@@ -25,9 +25,14 @@
 package cl.ucn.disc.pdbp.tdd.model;
 
 import cl.ucn.disc.pdbp.tdd.dao.ZonedDateTimeType;
+import com.j256.ormlite.dao.ForeignCollection;
 import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 @DatabaseTable(tableName = "ficha")
 public class Ficha {
@@ -61,18 +66,20 @@ public class Ficha {
   /** Tipo de paciente INTERNO o EXTERNO. */
   @DatabaseField private TipoPaciente tipoPaciente;
 
-  /**
-   * Duenio del paciente.
-   * Clave foranea.
-   */
+  /** Duenio del paciente. Clave foranea. */
   @DatabaseField(foreign = true, foreignAutoRefresh = true)
   private Persona duenio;
+
+  /** Controles del paciente. Coleccion Foranea */
+  @ForeignCollectionField(eager = true)
+  private ForeignCollection<Control> controles;
 
   /** Constructor vacio. */
   public Ficha() {}
 
   /**
-   * Constructor de una ficha.   *
+   * Constructor de una ficha. *
+   *
    * @param numeroFicha a usar
    * @param nombrePaciente a usar
    * @param especie del paciente
@@ -105,6 +112,7 @@ public class Ficha {
 
   /**
    * Obtener el numero de ficha.
+   *
    * @return numeroFicha
    */
   public int getNumeroFicha() {
@@ -113,6 +121,7 @@ public class Ficha {
 
   /**
    * Obtener el nombre del paciente.
+   *
    * @return nombrePaciente.
    */
   public String getNombrePaciente() {
@@ -121,6 +130,7 @@ public class Ficha {
 
   /**
    * Obtener especie del paciente.
+   *
    * @return especie
    */
   public String getEspecie() {
@@ -129,6 +139,7 @@ public class Ficha {
 
   /**
    * Obtener la fecha de nacimiento del paciente.
+   *
    * @return fechaNacimiento
    */
   public ZonedDateTime getFechaNacimiento() {
@@ -137,6 +148,7 @@ public class Ficha {
 
   /**
    * Obtener raza del paciente.
+   *
    * @return raza
    */
   public String getRaza() {
@@ -145,30 +157,34 @@ public class Ficha {
 
   /**
    * Obtener el sexo del paciente.
+   *
    * @return sexo
-   * */
+   */
   public Sexo getSexo() {
     return sexo;
   }
 
   /**
    * Obtener el color del paciente.
+   *
    * @return color
-   * */
+   */
   public String getColor() {
     return color;
   }
 
   /**
    * Obtener el tipo de paciente.
+   *
    * @return tipoPaciente
-   * */
+   */
   public TipoPaciente getTipoPaciente() {
     return tipoPaciente;
   }
 
   /**
    * Obtener id del paciente.
+   *
    * @return id
    */
   public Long getId() {
@@ -177,9 +193,19 @@ public class Ficha {
 
   /**
    * Obtener duenio del paciente.
+   *
    * @return duenio
    */
   public Persona getDuenio() {
     return duenio;
+  }
+
+  /**
+   * Obeter los controles del paciente
+   *
+   * @return controles
+   */
+  public List<Control> getControles() {
+    return Collections.unmodifiableList(new ArrayList<>(controles));
   }
 }
