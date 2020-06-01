@@ -26,8 +26,12 @@
 
 package cl.ucn.disc.pdbp.tdd;
 
-
+import cl.ucn.disc.pdbp.tdd.model.Control;
+import cl.ucn.disc.pdbp.tdd.model.Ficha;
+import cl.ucn.disc.pdbp.tdd.model.Persona;
 import io.javalin.http.Context;
+import java.util.List;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,14 +41,77 @@ public class ApiRestEndpoints {
 
   private static final Contratos CONTRATOS = new ContratosImpl("jdbc:sqlite:fivet.db");
 
-  private ApiRestEndpoints(){
+  private ApiRestEndpoints() {}
 
+  /**
+   * Obtiene todas las fichas por peticion mediante url representada por un context.
+   *
+   * @param ctx a analizar
+   */
+  public static void getAllFichas(Context ctx) {
+
+    log.debug("Getting all the Fichas ..");
+    List<Ficha> fichas = CONTRATOS.getAllFichas();
+    ctx.json(fichas);
   }
 
-  public static  void getAllFichas(Context ctx){
+  /**
+   * Busca todas las fichas con una query especifica, mediante url y representada por un context.
+   *
+   * @param ctx a usar
+   */
+  public static void findFichas(Context ctx) {
+    String query = ctx.pathParam("query");
+    log.debug("Finding Fichas with query <{}>", query);
 
-
-
+    List<Ficha> fichas = CONTRATOS.buscarFicha(query);
+    ctx.json(fichas);
   }
 
+  /**
+   * Busca a todas las personas , definiendo paremetros de pageSize y pageNumber a traves de un
+   * context.
+   *
+   * @param ctx a usar
+   */
+  public static void findAllPersonas(Context ctx) {
+
+    log.debug("Getting all the Personas ..");
+    String pageSize = ctx.queryParam("pageSize");
+    String pageNumber = ctx.queryParam("pageNumber");
+
+    log.debug("Finding Personas with pageNumber <{}>", pageNumber);
+    log.debug("Finding Personas with pageSize <{}>", pageSize);
+    List<Persona> personas = CONTRATOS.getAllPersonas();
+    ctx.json(personas);
+  }
+
+  /**
+   * Encuentra controles que tengan un numero de ficha en especifico representado por un context.
+   *
+   * @param ctx a usar
+   */
+  public static void findControlesByNumeroFicha(Context ctx) {
+
+    String numeroFicha = ctx.pathParam("numeroFicha");
+    log.debug("Getting The Controles by <{}>", numeroFicha);
+
+    List<Control> controles = CONTRATOS.findByNumero(numeroFicha);
+    ctx.json(controles);
+  }
+
+  // TODO implementar metodo
+  public static void createFicha(Context ctx) {}
+
+  // TODO implementar metodo
+  public static void createPersona(Context context) {}
+
+  // TODO implementar metodo
+  public static void createControlToFicha(Context context) {}
+
+  // TODO implementar metodo
+  public static void findPersonaByNumeroFicha(Context context) {}
+
+  // TODO implementar metodo
+  public static void createPersonaToFicha(@NotNull Context context) {}
 }
