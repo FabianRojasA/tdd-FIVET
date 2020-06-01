@@ -34,44 +34,40 @@ import com.j256.ormlite.jdbc.JdbcPooledConnectionSource;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
-import org.apache.commons.lang3.NotImplementedException;
-import org.apache.commons.lang3.StringUtils;
-import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
+import org.apache.commons.lang3.NotImplementedException;
+import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Concrete implementation of {@link Contratos}.
- *
- */
+ * */
 @SuppressWarnings("CollectionWithoutInitialCapacity")
 public final class ContratosImpl implements Contratos {
 
-  /**
-   * The Logger.
-   */
+  /** The Logger. */
   private static final Logger log = LoggerFactory.getLogger(ContratosImpl.class);
 
   /**
    * The {@link cl.ucn.disc.pdbp.tdd.dao.RepositoryOrmLite} of Ficha.
-   */
+   * */
   private final RepositoryOrmLite<Ficha, Long> repoFicha;
 
   /**
    * The {@link cl.ucn.disc.pdbp.tdd.dao.RepositoryOrmLite} of Ficha.
-   */
+   * */
   private final RepositoryOrmLite<Persona, Long> repoPersona;
 
   /**
    * The {@link cl.ucn.disc.pdbp.tdd.dao.RepositoryOrmLite} of Ficha.
-   */
+   * */
   private final RepositoryOrmLite<Control, Long> repoControl;
 
   /**
@@ -106,6 +102,7 @@ public final class ContratosImpl implements Contratos {
   }
 
   /**
+   * Create a connection.
    * @param databaseUrl to use.
    * @return the connection to the database.
    * @throws SQLException if any problem.
@@ -125,7 +122,9 @@ public final class ContratosImpl implements Contratos {
   }
 
   /**
-   *
+   * Registrar paciente.
+   * @param ficha to insert
+   * @return Ficha modificada
    */
   @Override
   public Ficha registrarPaciente(Ficha ficha) {
@@ -133,7 +132,9 @@ public final class ContratosImpl implements Contratos {
   }
 
   /**
-   *
+   * Registrar persona en el repositorio de personas.
+   * @param persona a registrar.
+   * @return persona creada
    */
   @Override
   public Persona registrarPersona(Persona persona) {
@@ -142,7 +143,9 @@ public final class ContratosImpl implements Contratos {
   }
 
   /**
-   *
+   * Buscar ficha por query en los distintos repositorios.
+   * @param query a buscar.
+   * @return las fichas coincidentes.
    */
   @Override
   public List<Ficha> buscarFicha(String query) {
@@ -157,45 +160,29 @@ public final class ContratosImpl implements Contratos {
 
         // 1. Find Fichas by numero
         log.debug("Searching with numero ..");
-        fichas.addAll(this.repoFicha.findAll("numero", query));
+        fichas.addAll(this.repoFicha.findAll("numeroFicha", query));
 
         // 2. Find by partial rut with foreign key
         // https://ormlite.com/javadoc/ormlite-core/doc-files/ormlite_3.html#Join-Queries
         log.debug("Searching with rut ..");
         QueryBuilder<Persona, Long> personaQuery = repoPersona.getQuery();
 
-        personaQuery
-            .where()
-            .like("rut", "%" + query + "%");
+        personaQuery.where().like("rut", "%" + query + "%");
 
-        fichas.addAll(this.repoFicha
-            .getQuery()
-            .join(personaQuery)
-            .query());
-
+        fichas.addAll(this.repoFicha.getQuery().join(personaQuery).query());
       }
 
       // 3. Find by partial nombrePaciente with foreign key
       log.debug("Searching with nombre paciente ..");
-      fichas.addAll(this.repoFicha
-          .getQuery()
-          .where()
-          .like("nombrePaciente", "%" + query + "%")
-          .query()
-      );
+      fichas.addAll(
+          this.repoFicha.getQuery().where().like("nombrePaciente", "%" + query + "%").query());
 
       // 4. Find by partial nombre duenio.
       log.debug("Searching with nombre duenio ..");
       QueryBuilder<Persona, Long> personaQuery = repoPersona.getQuery();
-      personaQuery
-          .where()
-          .like("nombre", "%" + query + "%");
+      personaQuery.where().like("nombre", "%" + query + "%");
 
-      fichas.addAll(repoFicha
-          .getQuery()
-          .join(personaQuery)
-          .query()
-      );
+      fichas.addAll(repoFicha.getQuery().join(personaQuery).query());
 
     } catch (SQLException ex) {
       throw new RuntimeException(ex);
@@ -203,15 +190,15 @@ public final class ContratosImpl implements Contratos {
 
     // Remove duplicated (by id)
     return new ArrayList<>(
-        fichas.stream().collect(
-            Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(Ficha::getId)))
-        )
-    );
-
+        fichas.stream()
+            .collect(
+                Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(Ficha::getId)))));
   }
 
   /**
-   *
+   * Buscar por rut en el repositorio de personas.
+   * @param rut a buscar
+   * @return persona con el rut indicado.
    */
   @Override
   @Nullable
@@ -227,10 +214,39 @@ public final class ContratosImpl implements Contratos {
   }
 
   /**
-   *
+   * Obtener todas las fichas del repositorio de fichas.
+   * @return Lista de todas las fichas.
    */
   @Override
   public List<Ficha> getAllFichas() {
     return this.repoFicha.findAll();
+  }
+
+  /**
+   * Obtener todas las personas del repositorio de personas.
+   * @return Lista con todas las personas.
+   */
+  @Override
+  public List<Persona> getAllPersonas() {
+    return this.repoPersona.findAll();
+  }
+
+  /**
+   * Buscar lista de controles con un numero de ficha en especifico.
+   * @param numero de la ficha de los controles
+   * @return los controles coincidentes.
+   */
+  @Override
+  public List<Control> findByNumero(String numero) {
+
+    List<Control> controles = new ArrayList<>();
+    List<Ficha> fichas = new ArrayList<>();
+    fichas.addAll(this.repoFicha.findAll("numeroFicha", numero));
+
+    for (Ficha f : fichas) {
+      controles.addAll(f.getControles());
+    }
+
+    return controles;
   }
 }
