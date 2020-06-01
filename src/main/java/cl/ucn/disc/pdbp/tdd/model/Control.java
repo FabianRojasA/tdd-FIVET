@@ -1,4 +1,3 @@
-
 /*
  * MIT License
  *
@@ -25,43 +24,66 @@
 
 package cl.ucn.disc.pdbp.tdd.model;
 
+import cl.ucn.disc.pdbp.tdd.dao.ZonedDateTimeType;
+import com.j256.ormlite.field.DatabaseField;
 import java.time.ZonedDateTime;
 
 public class Control {
 
+  /** Id del control. */
+  @DatabaseField(generatedId = true)
+  private Long id;
+
   /** Fecha del control. */
-  private final ZonedDateTime fecha;
+  @DatabaseField(persisterClass = ZonedDateTimeType.class)
+  private ZonedDateTime fecha;
 
   /** Fecha del proximo control. */
-  private final ZonedDateTime fechaProximo;
+  @DatabaseField(persisterClass = ZonedDateTimeType.class)
+  private ZonedDateTime fechaProximo;
 
   /** Temperatura del paciente en grados celcius. */
-  private final double temperatura;
+  @DatabaseField private double temperatura;
 
   /** Peso del paciente en kilos. */
-  private final double peso;
+  @DatabaseField private double peso;
 
   /** Altura del paciente en centimetros. */
-  private final double altura;
+  @DatabaseField private double altura;
 
   /** Diagnostico del paciente. */
-  private final String diagnostico;
+  @DatabaseField private String diagnostico;
 
   /** Veterinario del control. */
-  private final Persona veterinario;
+  @DatabaseField(foreign = true, canBeNull = false, foreignAutoRefresh = true)
+  private Persona veterinario;
+
+  /** Ficha del control. */
+  @DatabaseField(foreign = true, foreignAutoRefresh = true)
+  private Ficha ficha;
+
+  /** Constructor vacio. */
+  Control() {}
 
   /**
-     * Constructor del control.
-     * @param fecha del control
-     * @param fechaProximo control
-     * @param temperatura del paciente
-     * @param peso del paciente
-     * @param altura del paciente
-     * @param diagnostico del paciente
-     * @param veterinario del control
-   * */
-  public Control(ZonedDateTime fecha, ZonedDateTime fechaProximo, double temperatura, double peso,
-      double altura, String diagnostico, Persona veterinario) {
+   * Constructor del control.
+   *
+   * @param fecha del control
+   * @param fechaProximo control
+   * @param temperatura del paciente
+   * @param peso del paciente
+   * @param altura del paciente
+   * @param diagnostico del paciente
+   * @param veterinario del control
+   */
+  public Control(
+      ZonedDateTime fecha,
+      ZonedDateTime fechaProximo,
+      double temperatura,
+      double peso,
+      double altura,
+      String diagnostico,
+      Persona veterinario) {
     this.fecha = fecha;
     this.fechaProximo = fechaProximo;
     this.temperatura = temperatura;
@@ -73,6 +95,7 @@ public class Control {
 
   /**
    * Obtener la fecha de control.
+   *
    * @return fecha
    */
   public ZonedDateTime getFecha() {
@@ -81,6 +104,7 @@ public class Control {
 
   /**
    * Obtener la fecha del proximo control.
+   *
    * @return fechaProximo
    */
   public ZonedDateTime getFechaProximo() {
@@ -89,6 +113,7 @@ public class Control {
 
   /**
    * Obtener temperatura del paciente.
+   *
    * @return temperatura
    */
   public double getTemperatura() {
@@ -97,6 +122,7 @@ public class Control {
 
   /**
    * Obtener peso del paciente.
+   *
    * @return peso
    */
   public double getPeso() {
@@ -105,6 +131,7 @@ public class Control {
 
   /**
    * Obtener altura del paciente.
+   *
    * @return altura
    */
   public double getAltura() {
@@ -113,6 +140,7 @@ public class Control {
 
   /**
    * Obtener diagnostico del paciente.
+   *
    * @return diagnostico
    */
   public String getDiagnostico() {
@@ -121,6 +149,7 @@ public class Control {
 
   /**
    * Obtener veterinario.
+   *
    * @return veterinario
    */
   public Persona getVeterinario() {
