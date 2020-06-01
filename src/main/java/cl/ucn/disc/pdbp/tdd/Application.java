@@ -26,12 +26,20 @@
 
 package cl.ucn.disc.pdbp.tdd;
 
+import cl.ucn.disc.pdbp.tdd.model.Ficha;
+import cl.ucn.disc.pdbp.tdd.model.Persona;
+import cl.ucn.disc.pdbp.tdd.model.Sexo;
+import cl.ucn.disc.pdbp.tdd.model.TipoPaciente;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import io.javalin.Javalin;
+import io.javalin.apibuilder.ApiBuilder;
 import io.javalin.core.util.RouteOverviewPlugin;
 import io.javalin.plugin.json.JavalinJson;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -72,6 +80,71 @@ public final class Application {
               // Eneable routes helper
               javalinConfig.registerPlugin(new RouteOverviewPlugin("/routes"));
             })
+            .routes(
+                () -> {
+
+                  // The version
+                  ApiBuilder.path(
+                      "v1",
+                      () -> {
+
+                        // /fichas
+                        ApiBuilder.path(
+                            "fichas",
+                            () -> {
+
+                              // Get -> /fichas
+                              ApiBuilder.get(ApiRestEndpoints::getAllFichas);
+                              ApiBuilder.post(ApiRestEndpoints::createFicha);
+
+                              // Get -> /fichas/find/{query}
+                              ApiBuilder.path(
+                                  "find/:query",
+                                  () -> {
+                                    ApiBuilder.get(ApiRestEndpoints::findFichas);
+                                  });
+
+                              // Get -> /fichas/{numeroFicha}/controles
+                              ApiBuilder.path(
+                                  ":numeroFicha",
+                                  () -> {
+                                    ApiBuilder.path(
+                                        "controles",
+                                        () -> {
+                                          ApiBuilder.get(
+                                              ApiRestEndpoints::findControlesByNumeroFicha);
+                                          ApiBuilder.post(ApiRestEndpoints::createControlToFicha);
+                                        });
+
+                                    ApiBuilder.path(
+                                        "persona",
+                                        () -> {
+                                          ApiBuilder.get(
+                                              ApiRestEndpoints::findPersonaByNumeroFicha);
+                                          ApiBuilder.post(ApiRestEndpoints::createPersonaToFicha);
+                                        });
+                                  });
+                            });
+
+                        // /personas
+                        ApiBuilder.path(
+                            "personas",
+                            () -> {
+
+                              // Get -> /personas
+                              ApiBuilder.get(ApiRestEndpoints::findAllPersonas);
+                              ApiBuilder.post(ApiRestEndpoints::createPersona);
+
+                              ApiBuilder.path(
+                                  "?:pageSize:pageNumber",
+                                  () -> {
+
+                                    // Get -> /personas
+                                    ApiBuilder.get(ApiRestEndpoints::findAllPersonas);
+                                  });
+                            });
+                      });
+                })
             .start(7000);
 
     // Shutdown hook!
