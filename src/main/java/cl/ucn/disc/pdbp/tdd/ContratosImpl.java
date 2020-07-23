@@ -128,7 +128,9 @@ public final class ContratosImpl implements Contratos {
    */
   @Override
   public Ficha registrarPaciente(Ficha ficha) {
-    throw new NotImplementedException("Not yet!");
+
+    this.repoFicha.create(ficha);
+    return ficha;
   }
 
   /**
@@ -240,8 +242,7 @@ public final class ContratosImpl implements Contratos {
   public List<Control> findByNumero(String numero) {
 
     List<Control> controles = new ArrayList<>();
-    List<Ficha> fichas = new ArrayList<>();
-    fichas.addAll(this.repoFicha.findAll("numeroFicha", numero));
+    List<Ficha> fichas = new ArrayList<>(this.repoFicha.findAll("numeroFicha", numero));
 
     for (Ficha f : fichas) {
       controles.addAll(f.getControles());

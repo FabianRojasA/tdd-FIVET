@@ -110,6 +110,10 @@ public class Ficha {
     this.duenio = duenio;
   }
 
+  public void addControl(Control control){
+    this.controles.add(control);
+  }
+
   /**
    * Obtener el numero de ficha.
    *

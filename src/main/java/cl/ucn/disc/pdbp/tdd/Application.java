@@ -26,6 +26,10 @@
 
 package cl.ucn.disc.pdbp.tdd;
 
+import static io.javalin.apibuilder.ApiBuilder.get;
+import static io.javalin.apibuilder.ApiBuilder.path;
+import static io.javalin.apibuilder.ApiBuilder.post;
+
 import cl.ucn.disc.pdbp.tdd.model.Ficha;
 import cl.ucn.disc.pdbp.tdd.model.Persona;
 import cl.ucn.disc.pdbp.tdd.model.Sexo;
@@ -80,71 +84,40 @@ public final class Application {
               // Eneable routes helper
               javalinConfig.registerPlugin(new RouteOverviewPlugin("/routes"));
             })
-            .routes(
-                () -> {
+            .routes( () -> {
 
-                  // The version
-                  ApiBuilder.path(
-                      "v1",
-                      () -> {
+              // The version
+              ApiBuilder.path(
+                  "v1",
+                  () -> {
+                    path("personas", () -> {
+                      get(ApiRestEndpoints::findAllPersonas);
+                      post(ApiRestEndpoints::createPersona);
 
-                        // /fichas
-                        ApiBuilder.path(
-                            "fichas",
-                            () -> {
+                      path("list/:pageSize", () -> get(ApiRestEndpoints::findPersonas));
+                    });
 
-                              // Get -> /fichas
-                              ApiBuilder.get(ApiRestEndpoints::getAllFichas);
-                              ApiBuilder.post(ApiRestEndpoints::createFicha);
+                    path("fichas", () -> {
 
-                              // Get -> /fichas/find/{query}
-                              ApiBuilder.path(
-                                  "find/:query",
-                                  () -> {
-                                    ApiBuilder.get(ApiRestEndpoints::findFichas);
-                                  });
+                      get(ApiRestEndpoints::getAllFichas);
+                      post(ApiRestEndpoints::createFicha);
 
-                              // Get -> /fichas/{numeroFicha}/controles
-                              ApiBuilder.path(
-                                  ":numeroFicha",
-                                  () -> {
-                                    ApiBuilder.path(
-                                        "controles",
-                                        () -> {
-                                          ApiBuilder.get(
-                                              ApiRestEndpoints::findControlesByNumeroFicha);
-                                          ApiBuilder.post(ApiRestEndpoints::createControlToFicha);
-                                        });
+                      path("/find/:query", () -> get(ApiRestEndpoints::findFichas));
 
-                                    ApiBuilder.path(
-                                        "persona",
-                                        () -> {
-                                          ApiBuilder.get(
-                                              ApiRestEndpoints::findPersonaByNumeroFicha);
-                                          ApiBuilder.post(ApiRestEndpoints::createPersonaToFicha);
-                                        });
-                                  });
-                            });
-
-                        // /personas
-                        ApiBuilder.path(
-                            "personas",
-                            () -> {
-
-                              // Get -> /personas
-                              ApiBuilder.get(ApiRestEndpoints::findAllPersonas);
-                              ApiBuilder.post(ApiRestEndpoints::createPersona);
-
-                              ApiBuilder.path(
-                                  "?:pageSize:pageNumber",
-                                  () -> {
-
-                                    // Get -> /personas
-                                    ApiBuilder.get(ApiRestEndpoints::findAllPersonas);
-                                  });
-                            });
+                      path(":numeroFicha/controles", () -> {
+                        get(ApiRestEndpoints::findControlesByNumeroFicha);
+                        post(ApiRestEndpoints::createControlToFicha);
                       });
-                })
+
+                      path(":numeroficha/persona", () -> {
+
+                      });
+
+                    });
+
+                  });
+
+            })
             .start(7000);
 
     // Shutdown hook!

@@ -29,7 +29,12 @@ package cl.ucn.disc.pdbp.tdd;
 import cl.ucn.disc.pdbp.tdd.model.Control;
 import cl.ucn.disc.pdbp.tdd.model.Ficha;
 import cl.ucn.disc.pdbp.tdd.model.Persona;
+import cl.ucn.disc.pdbp.tdd.model.Sexo;
+import cl.ucn.disc.pdbp.tdd.model.TipoPaciente;
+import com.j256.ormlite.stmt.query.In;
 import io.javalin.http.Context;
+import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -77,11 +82,6 @@ public class ApiRestEndpoints {
   public static void findAllPersonas(Context ctx) {
 
     log.debug("Getting all the Personas ..");
-    String pageSize = ctx.queryParam("pageSize");
-    String pageNumber = ctx.queryParam("pageNumber");
-
-    log.debug("Finding Personas with pageNumber <{}>", pageNumber);
-    log.debug("Finding Personas with pageSize <{}>", pageSize);
     List<Persona> personas = CONTRATOS.getAllPersonas();
     ctx.json(personas);
   }
@@ -100,18 +100,101 @@ public class ApiRestEndpoints {
     ctx.json(controles);
   }
 
-  // TODO implementar metodo
-  public static void createFicha(Context ctx) {}
+  /**
+   * Create a Ficha
+   * @param ctx a usar
+   */
+  public static void createFicha(Context ctx) {
 
-  // TODO implementar metodo
-  public static void createPersona(Context context) {}
+    log.debug("Creating Ficha");
+    int numeroFicha = Integer.parseInt(ctx.queryParam("numeroFicha"));
+    String nombrePaciente = ctx.queryParam("nombrePaciente");
+    String especie = ctx.queryParam("especie");
+    ZonedDateTime fechaNacimiento = ZonedDateTime.parse(ctx.queryParam("fechaNacimiento"));
+    String raza = ctx.queryParam("raza");
+    Sexo sexo = Sexo.valueOf(ctx.queryParam("sexo"));
+    String color = ctx.queryParam("color");
+    TipoPaciente tipoPaciente = TipoPaciente.valueOf(ctx.queryParam("TipoPaciente"));
+    String rutDuenio = ctx.queryParam("rutDuenio");
+    Persona duenio = CONTRATOS.findByRut(rutDuenio);
 
-  // TODO implementar metodo
-  public static void createControlToFicha(Context context) {}
+    Ficha ficha =
+        new Ficha(
+            numeroFicha,
+            nombrePaciente,
+            especie,
+            fechaNacimiento,
+            raza,
+            sexo,
+            color,
+            tipoPaciente,
+            duenio);
 
-  // TODO implementar metodo
-  public static void findPersonaByNumeroFicha(Context context) {}
+    ctx.json(CONTRATOS.registrarPaciente(ficha));
+  }
 
-  // TODO implementar metodo
-  public static void createPersonaToFicha(@NotNull Context context) {}
+  /**
+   * Create a Persona
+   * @param context a usar
+   */
+  public static void createPersona(Context context) {
+
+    log.debug("Creating Persona");
+    String nombre = context.queryParam("nombre");
+    String apellido = context.queryParam("apellido");
+    String rut = context.queryParam("rut");
+    String email = context.queryParam("email");
+
+    Persona persona = new Persona(nombre, apellido, rut, email);
+
+    context.json(CONTRATOS.registrarPersona(persona));
+  }
+
+  /**
+   * Create a control and associate it with a ficha
+   * @param context a usar
+   */
+  public static void createControlToFicha(Context context) {
+
+    String numeroFicha = context.pathParam("numeroFicha");
+    log.debug("Creating The Control by <{}>", numeroFicha);
+    List<Ficha> fichas = CONTRATOS.buscarFicha(numeroFicha);
+
+    Ficha ficha = fichas.get(0);
+
+    ZonedDateTime fecha = ZonedDateTime.parse(context.queryParam("fecha"));
+    ZonedDateTime fechaProximo = ZonedDateTime.parse(context.queryParam("fechaProximo"));
+    double temperatura = Double.parseDouble(context.queryParam("temperatura"));
+    double peso = Double.parseDouble(context.queryParam("peso"));
+    double altura = Double.parseDouble(context.queryParam("altura"));
+    String diagnostico = context.queryParam("diagnostico");
+    String rutVet = context.queryParam("rutVet");
+    Persona veterinario = CONTRATOS.findByRut(rutVet);
+
+    Control control =
+        new Control(fecha, fechaProximo, temperatura, peso, altura, diagnostico, veterinario);
+
+    ficha.addControl(control);
+
+    context.json(ficha);
+  }
+
+  /**
+   * Find persons and return a list with size pageSize
+   * @param context a usar
+   */
+  public static void findPersonas(Context context) {
+
+    String pageSize = context.pathParam("pageSize");
+    log.debug("Finding persons list with page size <{}>", pageSize);
+
+    List<Persona> personas = CONTRATOS.getAllPersonas();
+    List<Persona> personasIndexadas = new ArrayList<>();
+
+    for (int i = 0; i < Integer.parseInt(pageSize); i++) {
+      personasIndexadas.add(personas.get(i));
+    }
+
+    context.json(personasIndexadas);
+  }
 }
